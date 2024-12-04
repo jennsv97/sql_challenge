@@ -1,0 +1,71 @@
+﻿-- Exported from QuickDBD: https://www.quickdatabasediagrams.com/
+-- Link to schema: https://app.quickdatabasediagrams.com/#/d/h39ds9
+-- NOTE! If you have used non-SQL datatypes in your design, you will have to change these here.
+
+-- Table for departments.csv
+
+CREATE TABLE "departments" (
+    "dept_no" VARCHAR(10)   NOT NULL,
+    "dept_name" VARCHAR   NOT NULL
+);
+
+-- Table for dept_emp.csv (linking departments to employees)
+CREATE TABLE "dept_emp" (
+    "emp_no" INTEGER   NOT NULL,
+    "dept_no" VARCHAR(10)   NOT NULL,
+    CONSTRAINT "pk_dept_emp" PRIMARY KEY (
+        "emp_no","dept_no"
+     )
+);
+
+-- Composite primary key
+-- Table for dept_manager.csv (linking managers to departments)
+CREATE TABLE "dept_manager" (
+    "dept_no" VARCHAR(10)   NOT NULL,
+    "emp_no" INTEGER   NOT NULL,
+    CONSTRAINT "pk_dept_manager" PRIMARY KEY (
+        "dept_no","emp_no"
+     )
+);
+
+-- Composite primary key
+-- Table for titles.csv
+CREATE TABLE "titles" (
+    "title_id" VARCHAR   NOT NULL,
+    "title" VARCHAR   NOT NULL
+);
+
+-- Table for employees.csv
+CREATE TABLE "employees" (
+    "emp_no" INTEGER   NOT NULL,
+    "emp_title_id" VARCHAR   NOT NULL,
+    "birth_date" DATE   NOT NULL,
+    "first_name" VARCHAR   NOT NULL,
+    "last_name" VARCHAR   NOT NULL,
+    "sex" VARCHAR   NOT NULL,
+    "hire_date" DATE   NOT NULL
+);
+
+CREATE TABLE "salaries" (
+    "emp_no" INTEGER   NOT NULL,
+    "salary" INTEGER   NOT NULL
+);
+
+ALTER TABLE "dept_emp" ADD CONSTRAINT "fk_dept_emp_dept_no" FOREIGN KEY("dept_no")
+REFERENCES "departments" ("dept_no");
+
+ALTER TABLE "dept_manager" ADD CONSTRAINT "fk_dept_manager_dept_no" FOREIGN KEY("dept_no")
+REFERENCES "departments" ("dept_no");
+
+ALTER TABLE "dept_manager" ADD CONSTRAINT "fk_dept_manager_emp_no" FOREIGN KEY("emp_no")
+REFERENCES "dept_emp" ("emp_no");
+
+ALTER TABLE "employees" ADD CONSTRAINT "fk_employees_emp_no" FOREIGN KEY("emp_no")
+REFERENCES "dept_manager" ("emp_no");
+
+ALTER TABLE "employees" ADD CONSTRAINT "fk_employees_emp_title_id" FOREIGN KEY("emp_title_id")
+REFERENCES "titles" ("title_id");
+
+ALTER TABLE "salaries" ADD CONSTRAINT "fk_salaries_emp_no" FOREIGN KEY("emp_no")
+REFERENCES "employees" ("emp_no");
+
